@@ -1,0 +1,61 @@
+<itemsList>
+	<item name="Свинско без кост" code="123456">
+		<param>
+			<paramName>Срок на годност</paramName>
+			<paramTag>EXP</paramTag>
+			<paramValue>21/08/2014</paramValue>
+		</param>
+		<param>
+			<paramName>Произход</paramName>
+			<paramTag>ORG</paramTag>
+			<paramValue>България</paramValue>
+		</param>		
+		<param>
+			<paramName>Цена на килограм</paramName>
+			<paramTag>PPK</paramTag>
+			<paramValue>5.50</paramValue>
+		</param>
+	</item>
+	
+	<item name="Телешки шол" code="423456">
+		<param>
+			<paramName>Срок на годност</paramName>
+			<paramTag>EXP</paramTag>
+			<paramValue>21/08/2075</paramValue>
+		</param>
+		<param>
+			<paramName>Произход</paramName>
+			<paramTag>ORG</paramTag>
+			<paramValue>Уругвай</paramValue>
+		</param>		
+		<param>
+			<paramName>Цена на килограм</paramName>
+			<paramTag>PPK</paramTag>
+			<paramValue>3.20</paramValue>
+		</param>
+	</item>
+	
+	<item name="Кашкавал витоша" code="523456">
+		<param>
+			<paramName>Срок на годност</paramName>
+			<paramTag>EXP</paramTag>
+			<paramValue>06/07/2014</paramValue>
+		</param>
+		<param>
+			<paramName>Произход</paramName>
+			<paramTag>ORG</paramTag>
+			<paramValue>България</paramValue>
+		</param>		
+		<param>
+			<paramName>Цена на килограм</paramName>
+			<paramTag>PPK</paramTag>
+			<paramValue>8.00</paramValue>
+		</param>
+		<param>
+			<paramName>Масленост</paramName>
+			<paramTag>FAT</paramTag>
+			<paramValue>30%</paramValue>
+		</param>		
+	</item>
+	
+</itemsList>
