@@ -1,9 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     lot="";
@@ -12,10 +10,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lblLot->setText("Партида:");
     ui->lblLabelFormFile->setText("Етикет:");
     ui->textBrowser_ItemInfo->setText("");
+    runningMode=false;
 
     connect(&secondsTimer, SIGNAL(timeout()), this, SLOT(on_secondsTimer()));
     secondsTimer.start(1000);
-
 
     //зареждане на настройки от ini файл
     QFile iniFile("settings.ini");
@@ -81,27 +79,28 @@ MainWindow::MainWindow(QWidget *parent) :
     delete dict;
     delete fn;
 
-    //Настройка на сериините портове
-    spScale.setPortName(settings.scalePortName);
-    spScale.setFlowControl(QSerialPort::NoFlowControl);
-    spScale.setBaudRate((QSerialPort::BaudRate) settings.scaleBaudrate);
-    spScale.setDataBits((QSerialPort::DataBits) settings.scaleDataBits);
-    spScale.setParity((QSerialPort::Parity) settings.scaleParity);
-    spScale.setStopBits((QSerialPort::StopBits) settings.scaleStopBits);
+//TODO: Тези параметри трябва да се зареждат и запазват във файла settings.ini
+    settings.averagingCicles = 5;
+    settings.mesureDelay = 1500;     //15 ms
+    settings.threshold = 500;
+    settings.lowThreshold = 150;
+    settings.printTotal = 1;
+    settings.totalCount = 5;
 
-    spLabel.setPortName(settings.labelPrinterPortName);
-    spLabel.setFlowControl(QSerialPort::NoFlowControl);
-    spLabel.setBaudRate((QSerialPort::BaudRate) settings.labelPrinterBaudrate);
-    spLabel.setDataBits((QSerialPort::DataBits) settings.labelPrinterDataBits);
-    spLabel.setParity((QSerialPort::Parity) settings.labelPrinterParity);
-    spLabel.setStopBits((QSerialPort::StopBits) settings.scaleStopBits);
+    //Обектите за работа със сериини портове са изнесени в други нишки
+    scale.setupThread(&scaleThread);
+    scale.moveToThread(&scaleThread);
+    connect(&scaleThread, SIGNAL(finished()), this, SLOT(scaleReadingFinished()));
+    scaleStatus=-1;
 
-    spTotalLabel.setPortName(settings.totalPrinterPortName);
-    spTotalLabel.setFlowControl(QSerialPort::NoFlowControl);
-    spTotalLabel.setBaudRate((QSerialPort::BaudRate) settings.totalPrinterBaudrate);
-    spTotalLabel.setDataBits((QSerialPort::DataBits) settings.totalPrinterDataBits);
-    spTotalLabel.setParity((QSerialPort::Parity) settings.totalPrinterParity);
-    spTotalLabel.setStopBits((QSerialPort::StopBits)settings.totalPrinterStopBits);
+    lcdPrescaler= LCD_PRESCALER;
+    prgState = WAIT_LOW_LEVEL;
+
+    //Стартиране на везната
+    scale.initSettings(&settings);
+    scale.run=true;
+    if(scaleThread.isRunning()) qDebug() << "scaleThread is still running.";
+    else scaleThread.start();
 
 }
 
@@ -174,3 +173,112 @@ void MainWindow::on_actionCommSettings_triggered()
 
     }
 }
+
+void MainWindow::on_btnStartStop_clicked()
+{
+    runningMode=!runningMode;
+
+    if(runningMode)
+    {
+        ui->btnStartStop->setText("СТОП");
+    }
+    else
+    {
+        ui->btnStartStop->setText("СТАРТ");
+    }
+}
+
+void MainWindow::scaleReadingFinished()
+{
+    //Този слот се вика когато нишката за четене от везната приключи.
+    //Прочетената стойност се изобразява. Проверява се кода на грешка и ако е различен от 0 се показва аларма.
+    //Ако е в режим етикиране се отработва логиката на работа.
+    //Нишката за четене отново се презапуска.
+    double weight = scale.weight;
+
+    //Изобразяването става веднъж на LCD_PRESCALER прочитания
+    lcdPrescaler--;
+    if(lcdPrescaler==0)
+    {
+        ui->lcdNumber->display(weight);
+        lcdPrescaler=LCD_PRESCALER;
+    }
+
+    //Проверка на кода за грешка
+    if(scaleStatus != scale.getErrStatus())
+    {
+        scaleStatus = scale.getErrStatus();
+
+        QPalette pal = ui->frameScaleStatus->palette();
+        switch(scaleStatus)
+        {
+            case 0: //ok
+                pal.setColor(QPalette::Background, Qt::green);
+                break;
+            case 1: //Порта не е отворен
+            case 2: //Няма връзка с везната
+            case 3: //Некоректни данни
+                pal.setColor(QPalette::Background, Qt::red);
+                break;
+            default:
+                break;
+        }
+        ui->frameScaleStatus->setPalette(pal);
+
+        if(scaleStatus)
+        {
+            scaleThread.start();
+            return;//При грешка не се отработва логика
+        }
+    }
+
+    if(runningMode)
+    {
+        switch(prgState)
+        {
+            case WAIT_LOW_LEVEL : //Чака везната да се успокои и да падне под settings.lowThreshold
+                if(weight < settings.lowThreshold)
+                {
+                    prgState = WAIT_TRIGER_LEVEL;
+                    qDebug() << "prgState = WAIT_TRIGER_LEVEL";
+                }
+                break;
+            case WAIT_TRIGER_LEVEL :
+                if(weight > settings.threshold)
+                {
+                    this->thread()->msleep(settings.mesureDelay);
+                    avgWeight=0;
+                    avgCounter=settings.averagingCicles;
+                    prgState = AVERAGING;
+                    qDebug() << "prgState = AVERAGING";
+                }
+                break;
+            case AVERAGING:
+                if(avgCounter)
+                {
+                    avgCounter--;
+                    avgWeight+=weight;
+                }
+                else
+                {
+                    avgWeight /= settings.averagingCicles;
+                    qDebug() << "Усреднено тегло = " << avgWeight;
+//TODO: печат на етикет
+//TODO: логика за тотал етикет и натрупване на тотал
+                    prgState = WAIT_LOW_LEVEL;
+                    qDebug() << "prgState = WAIT_LOW_LEVEL";
+                }
+                break;
+        }
+    }
+
+    scaleThread.start();
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    scale.run = false;
+    scaleThread.wait(1000);
+    event->accept();
+}
+

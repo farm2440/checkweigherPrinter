@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     dlgEditItems.cpp \
     dlgCommSettings.cpp \
     iniparser.cpp \
-    dictionary.cpp
+    dictionary.cpp \
+    scale.cpp
 
 HEADERS  += mainwindow.h \
     dlgItemSelect.h \
@@ -28,7 +29,8 @@ HEADERS  += mainwindow.h \
     dlgCommSettings.h \
     settings.h \
     iniparser.h \
-    dictionary.h
+    dictionary.h \
+    scale.h
 
 FORMS    += mainwindow.ui \
     dlgitemselect.ui \
@@ -38,3 +40,6 @@ FORMS    += mainwindow.ui \
 
 OTHER_FILES += \
     README.txt
+
+RESOURCES += \
+    res.qrc

@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>res/printer64.png</file>
+        <file>res/scale64.png</file>
+    </qresource>
+</RCC>

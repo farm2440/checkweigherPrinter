@@ -24,6 +24,14 @@ struct Settings
     int totalPrinterStopBits;
     int totalPrinterDataBits;
 
+    //[LABELING]
+    int threshold; //Тегло от везната над което започва отчитането
+    int lowThreshold; //Тегло под което трябва да падне везната за да започне нов цикъл
+    int mesureDelay; //Задръжка в милисекунди след достигане на прага
+    int averagingCicles; //Брой измервания които се правят и резултата им се осреднява
+    int printTotal; //1- отпечатва сумарен етикет. 2 - не отпечатва сумарен етикет
+    int totalCount; //Брой измервания на които се печата сумарен етикет
+
     //[OTHER]
     QString password; //Парола за защитени менюта
 };

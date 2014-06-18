@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout_4">
+   <layout class="QVBoxLayout" name="verticalLayout_6">
     <item>
      <spacer name="verticalSpacer_3">
       <property name="orientation">
@@ -103,6 +103,12 @@ p, li { white-space: pre-wrap; }
                 <width>160</width>
                 <height>80</height>
                </size>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::Panel</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Sunken</enum>
               </property>
              </widget>
             </item>
@@ -272,35 +278,108 @@ p, li { white-space: pre-wrap; }
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_4">
       <item>
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+       <widget class="QFrame" name="frameScaleStatus">
+        <property name="autoFillBackground">
+         <bool>true</bool>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
+        <property name="frameShape">
+         <enum>QFrame::Panel</enum>
         </property>
-       </spacer>
+        <property name="frameShadow">
+         <enum>QFrame::Sunken</enum>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>ВЕЗНА</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap resource="res.qrc">:/img/res/scale64.png</pixmap>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnStop">
-        <property name="minimumSize">
-         <size>
-          <width>200</width>
-          <height>100</height>
-         </size>
+       <widget class="QFrame" name="frameAplicStatus">
+        <property name="autoFillBackground">
+         <bool>true</bool>
         </property>
-        <property name="maximumSize">
-         <size>
-          <width>200</width>
-          <height>100</height>
-         </size>
+        <property name="frameShape">
+         <enum>QFrame::Panel</enum>
         </property>
-        <property name="text">
-         <string>СТОП</string>
+        <property name="frameShadow">
+         <enum>QFrame::Sunken</enum>
         </property>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>АПЛИКАТОР</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap resource="res.qrc">:/img/res/printer64.png</pixmap>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QFrame" name="framePrnTotalStatus">
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::Panel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Sunken</enum>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <widget class="QLabel" name="label_6">
+           <property name="text">
+            <string>ТОТАЛ</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_7">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap resource="res.qrc">:/img/res/printer64.png</pixmap>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
       <item>
@@ -316,9 +395,46 @@ p, li { white-space: pre-wrap; }
         </property>
        </spacer>
       </item>
+      <item>
+       <widget class="QPushButton" name="btnStartStop">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>100</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>200</width>
+          <height>100</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string>СТАРТ</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
    </layout>
+   <zorder>frameScaleStatus</zorder>
+   <zorder>frameAplicStatus</zorder>
+   <zorder>framePrnTotalStatus</zorder>
+   <zorder>label_7</zorder>
+   <zorder>verticalSpacer_2</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -408,7 +524,9 @@ p, li { white-space: pre-wrap; }
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="res.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>actionExit</sender>

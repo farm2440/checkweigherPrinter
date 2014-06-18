@@ -12,15 +12,20 @@
 #include <QHash>
 #include <QtSerialPort/QSerialPort>
 #include <QtSerialPort/QSerialPortInfo>
+#include <QThread>
+#include <QPalette>
 
 #include "dlgItemSelect.h"
 #include "dlgSelectLotNumber.h"
 #include "dlgEditItems.h"
 #include "dlgCommSettings.h"
 #include "settings.h"
+#include "scale.h"
 
 #include "dictionary.h"
 #include "iniparser.h"
+
+#define LCD_PRESCALER 4
 
 namespace Ui {
 class MainWindow;
@@ -34,16 +39,19 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    enum PrgState {WAIT_TRIGER_LEVEL, AVERAGING, WAIT_LOW_LEVEL };
+
 private slots:
     void on_actionItemSelect_triggered();
     void on_actionSelectLotNumber_triggered();
     void on_actionLabelSelect_triggered();
-    void on_secondsTimer();
-
+    void on_secondsTimer(); //За показанието на часовника
     void on_actionEditItems_triggered();
-
     void on_actionCommSettings_triggered();
+    void on_btnStartStop_clicked();
 
+    void scaleReadingFinished();  //Слота се вика когато приключи четене от везната. В него се отработва програмната логика
+    void closeEvent(QCloseEvent *event);
 private:
     Ui::MainWindow *ui;
 
@@ -52,9 +60,20 @@ private:
     QTimer secondsTimer; //Таймер за обновяване на показанието дата/час
 
     QHash<QString,QString> hashLabelParams; //Фиксирани параметри на етикета на апликатора
-    QSerialPort spScale,spLabel, spTotalLabel;
-    Settings settings;
+    Settings settings; //съдържанието на настройките се зарежда и пази във файла settings.xml
 
+
+    QThread scaleThread; //Нишкa за работа с везната
+    Scale scale;         //Обект за четене на везната. Изнася се в горната нишка
+    int scaleStatus;     //Пази последния код на грешка от везната. За следене на статус
+    int avgCounter;
+    double avgWeight;
+
+
+    bool runningMode;    //true в режим етикиране. Управлява се от бутна btnStartStop
+    int lcdPrescaler;    //брояч за по-инертно показване на теглото
+
+    PrgState prgState;
 };
 
 #endif // MAINWINDOW_H
