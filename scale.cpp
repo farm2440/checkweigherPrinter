@@ -10,6 +10,11 @@ Scale::Scale(QObject *parent) :  QObject(parent)
     run=false;
 }
 
+Scale::~Scale()
+{
+    if(sp.isOpen()) sp.close();
+}
+
 void Scale::setupThread(QThread *scaleThread)
 {
     connect(scaleThread, SIGNAL(started()), this, SLOT(startWork()));

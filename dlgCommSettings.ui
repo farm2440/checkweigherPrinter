@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>611</width>
-    <height>323</height>
+    <width>632</width>
+    <height>489</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>НАСТРОЙКИ КОМУНИКАЦИЯ</string>
+   <string>НАСТРОЙКИ</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_19">
+  <layout class="QVBoxLayout" name="verticalLayout_26">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_5">
      <item>
@@ -525,6 +525,149 @@
         </item>
        </layout>
       </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_9">
+     <item>
+      <widget class="QGroupBox" name="groupBox_14">
+       <property name="title">
+        <string>Измерване на тегло</string>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_24">
+            <item>
+             <widget class="QLabel" name="label_10">
+              <property name="text">
+               <string>Цикли на осредняване</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_11">
+              <property name="text">
+               <string>Защитно време (ms)</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_12">
+              <property name="text">
+               <string>Праг на сработване (g)</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_13">
+              <property name="text">
+               <string>Праг на освобождаване (g)</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_23">
+            <item>
+             <widget class="QLineEdit" name="le_averagingCicles"/>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="le_mesureDelay"/>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="le_threshold"/>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="le_lowThreshold"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_25">
+       <item>
+        <widget class="QGroupBox" name="groupPrintTotal">
+         <property name="title">
+          <string>Печат на етикет тотал</string>
+         </property>
+         <property name="checkable">
+          <bool>false</bool>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_19">
+          <property name="leftMargin">
+           <number>15</number>
+          </property>
+          <property name="rightMargin">
+           <number>15</number>
+          </property>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <widget class="QLabel" name="label_14">
+              <property name="text">
+               <string>Брой етикети</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="spinBox_totalCount">
+              <property name="maximum">
+               <number>10</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_7">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
     </layout>
    </item>

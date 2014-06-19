@@ -52,6 +52,12 @@ DlgCommSettings::DlgCommSettings(QWidget *parent, Settings *settings) :    QDial
     ui->rbTotalParityNone->setChecked(settings->totalPrinterParity==0);
     ui->rbTotalParityOdd->setChecked(settings->totalPrinterParity==3);
     ui->rbTotalParityEven->setChecked(settings->totalPrinterParity==2);
+
+    ui->le_averagingCicles->setText(QString::number(_settings->averagingCicles));
+    ui->le_lowThreshold->setText(QString::number(_settings->lowThreshold));
+    ui->le_threshold->setText(QString::number(_settings->threshold));
+    ui->le_mesureDelay->setText(QString::number(_settings->mesureDelay));
+    ui->spinBox_totalCount->setValue(_settings->totalCount);
 }
 
 DlgCommSettings::~DlgCommSettings()
@@ -61,6 +67,44 @@ DlgCommSettings::~DlgCommSettings()
 
 void DlgCommSettings::on_btOK_clicked()
 {
+    //Проверка за коректни данни
+    int tmp;
+    bool ok;
+
+    tmp = ui->le_averagingCicles->text().toInt(&ok);
+    if((!ok) || (tmp<1))
+    {
+        QMessageBox::critical(this, "ГРЕШКА", "Некоректна стойност за цикли за осредняване! Трябва да е по-голям от 0.");
+        return;
+    }
+    _settings->averagingCicles = tmp;
+
+    tmp = ui->le_threshold->text().toInt(&ok);
+    if((!ok) || (tmp<100))
+    {
+        QMessageBox::critical(this, "ГРЕШКА", "Некоректна стойност за праг на сработване! Трябва да е по-голям от 100.");
+        return;
+    }
+    _settings->threshold = tmp;
+
+    tmp = ui->le_lowThreshold->text().toInt(&ok);
+    if((!ok) || (tmp<50) || (tmp>=_settings->threshold))
+    {
+        QMessageBox::critical(this, "ГРЕШКА", "Некоректна стойност за праг на освобождаване! Трябва да е по-голям от 50 и по-малък от прага на сработване.");
+        return;
+    }
+    _settings->lowThreshold = tmp;
+
+    tmp = ui->le_mesureDelay->text().toInt(&ok);
+    if((!ok) || (tmp<0) || (tmp>=1000))
+    {
+        QMessageBox::critical(this, "ГРЕШКА", "Некоректна стойност за защитно време! Трябва да е по-голямо или равно на 0 и по-малко от 1000");
+        return;
+    }
+    _settings->mesureDelay = tmp;
+
+    _settings->totalCount = ui->spinBox_totalCount->value();
+
     //Направените настройки се отразяват в settings
     _settings->scalePortName = ui->comboScalePortName->currentText();
     _settings->scaleBaudrate = ui->comboScaleBaud->currentText().toInt();
@@ -111,6 +155,13 @@ void DlgCommSettings::on_btOK_clicked()
     s<< "scaleDataBits=" << _settings->scaleDataBits << "\r\n";
     s<< "scaleParity=" << _settings->scaleParity << "\r\n";
     s<< "scaleStopBits=" << _settings->scaleStopBits << "\r\n";
+    s<< "\r\n";
+    s<< "[PRINT]\r\n";
+    s<< "lowThreshold=" << _settings->lowThreshold << "\r\n";
+    s<< "threshold=" << _settings->threshold << "\r\n";
+    s<< "averagingCicles=" <<_settings->averagingCicles << "\r\n";
+    s<< "mesureDelay=" << _settings->mesureDelay << "\r\n";
+    s<< "totalCount=" << _settings->totalCount << "\r\n";
     s<< "\r\n";
     s<< "[OTHER]\r\n";
     s<< "password=" << _settings->password << "\r\n";

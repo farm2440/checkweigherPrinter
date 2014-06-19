@@ -70,7 +70,7 @@ private:
     double avgWeight;
 
 
-    bool runningMode;    //true в режим етикиране. Управлява се от бутна btnStartStop
+    bool printingMode;    //true в режим етикиране. Управлява се от бутна btnStartStop
     int lcdPrescaler;    //брояч за по-инертно показване на теглото
 
     PrgState prgState;

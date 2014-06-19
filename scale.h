@@ -16,6 +16,7 @@ class Scale : public QObject
     Q_OBJECT
 public:
     explicit Scale(QObject *parent = 0);
+    ~Scale();
 
     bool initSettings(Settings *settings); //Получава указател към структура с настройки на сериен порт и др;
     int getErrStatus();

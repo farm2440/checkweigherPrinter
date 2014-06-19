@@ -4,13 +4,18 @@
 MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    QPalette pal = ui->frame->palette();
+    pal.setColor(QPalette::Window, Qt::white);
+    ui->frame->setPalette(pal);
+
     lot="";
     rawLabelData="";
     labelData="";
     ui->lblLot->setText("Партида:");
     ui->lblLabelFormFile->setText("Етикет:");
     ui->textBrowser_ItemInfo->setText("");
-    runningMode=false;
+    printingMode=false;
 
     connect(&secondsTimer, SIGNAL(timeout()), this, SLOT(on_secondsTimer()));
     secondsTimer.start(1000);
@@ -24,7 +29,6 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
         iniFile.open(QIODevice::WriteOnly);
         QTextStream s(&iniFile);
         s<< "[COMMSETTINGS]\r\n";
-
         s<< "\r\n";
         s<< "labelPrinterPortName=\r\n";
         s<< "labelPrinterBaudrate=9600\r\n";
@@ -43,6 +47,13 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
         s<< "scaleDataBits=8\r\n";
         s<< "scaleParity=0\r\n";
         s<< "scaleStopBits=1\r\n";
+        s<< "\r\n";
+        s<< "[PRINT]\r\n";
+        s<< "lowThreshold=50\r\n";
+        s<< "threshold=100\r\n";
+        s<< "averagingCicles=3\r\n";
+        s<< "mesureDelay=15\r\n";
+        s<< "totalCount=0\r\n";
         s<< "\r\n";
         s<< "[OTHER]\r\n";
         s<< "password=\r\n";
@@ -74,18 +85,17 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     settings.scaleParity   = iniparser_getint(dict,QString("COMMSETTINGS:scaleParity").toLatin1().data(),0);
     settings.scaleStopBits = iniparser_getint(dict,QString("COMMSETTINGS:scaleStopBits").toLatin1().data(),1);
 
+    settings.averagingCicles = iniparser_getint(dict,QString("PRINT:averagingCicles").toLatin1().data(),3);
+    settings.mesureDelay = iniparser_getint(dict,QString("PRINT:mesureDelay").toLatin1().data(),15);
+    settings.threshold = iniparser_getint(dict,QString("PRINT:threshold").toLatin1().data(),100);
+    settings.lowThreshold = iniparser_getint(dict,QString("PRINT:lowThreshold").toLatin1().data(),50);
+    settings.totalCount = iniparser_getint(dict,QString("PRINT:totalCount").toLatin1().data(),0);
+
     settings.password  = QString( iniparser_getstring(dict, QString("OTHER:password").toLatin1().data(), QString("").toLatin1().data()) );
 
     delete dict;
     delete fn;
 
-//TODO: Тези параметри трябва да се зареждат и запазват във файла settings.ini
-    settings.averagingCicles = 5;
-    settings.mesureDelay = 1500;     //15 ms
-    settings.threshold = 500;
-    settings.lowThreshold = 150;
-    settings.printTotal = 1;
-    settings.totalCount = 5;
 
     //Обектите за работа със сериини портове са изнесени в други нишки
     scale.setupThread(&scaleThread);
@@ -176,9 +186,9 @@ void MainWindow::on_actionCommSettings_triggered()
 
 void MainWindow::on_btnStartStop_clicked()
 {
-    runningMode=!runningMode;
+    printingMode=!printingMode;
 
-    if(runningMode)
+    if(printingMode)
     {
         ui->btnStartStop->setText("СТОП");
     }
@@ -194,6 +204,9 @@ void MainWindow::scaleReadingFinished()
     //Прочетената стойност се изобразява. Проверява се кода на грешка и ако е различен от 0 се показва аларма.
     //Ако е в режим етикиране се отработва логиката на работа.
     //Нишката за четене отново се презапуска.
+
+    if(!scale.run) return; //При излизане везната се спира (run=false) и порта се затваря
+
     double weight = scale.weight;
 
     //Изобразяването става веднъж на LCD_PRESCALER прочитания
@@ -232,7 +245,7 @@ void MainWindow::scaleReadingFinished()
         }
     }
 
-    if(runningMode)
+    if(printingMode)
     {
         switch(prgState)
         {
