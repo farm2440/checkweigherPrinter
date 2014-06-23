@@ -11,6 +11,10 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = ChkWrPrint
 TEMPLATE = app
 
+#INCLUDEPATH += C:\\work\\Qt5\\ChkWrPrint-Drivers\\InpOutBinaries\\inpout32.h
+#LIBS += C:\\work\\Qt5\\ChkWrPrint-Drivers\\InpOutBinaries\\Win32\\inpout32.dll
+#LIBS += C:\\work\\Qt5\\ChkWrPrint-Drivers\\InpOutBinaries\\Win32\\inpout32.lib
+
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -30,7 +34,8 @@ HEADERS  += mainwindow.h \
     settings.h \
     iniparser.h \
     dictionary.h \
-    scale.h
+    scale.h \
+    inpout32.h
 
 FORMS    += mainwindow.ui \
     dlgitemselect.ui \

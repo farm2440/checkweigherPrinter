@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="windowModality">
+   <enum>Qt::WindowModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -50,6 +53,9 @@
     </item>
     <item>
      <widget class="QFrame" name="frame">
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
       <property name="frameShape">
        <enum>QFrame::NoFrame</enum>
       </property>
@@ -61,10 +67,10 @@
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_5">
        <property name="leftMargin">
-        <number>40</number>
+        <number>12</number>
        </property>
        <property name="rightMargin">
-        <number>40</number>
+        <number>12</number>
        </property>
        <item>
         <spacer name="horizontalSpacer_6">
@@ -105,11 +111,17 @@
                  <height>80</height>
                 </size>
                </property>
+               <property name="autoFillBackground">
+                <bool>true</bool>
+               </property>
                <property name="frameShape">
                 <enum>QFrame::Panel</enum>
                </property>
                <property name="frameShadow">
                 <enum>QFrame::Sunken</enum>
+               </property>
+               <property name="lineWidth">
+                <number>3</number>
                </property>
               </widget>
              </item>
@@ -410,17 +422,37 @@ p, li { white-space: pre-wrap; }
        </spacer>
       </item>
       <item>
+       <widget class="QPushButton" name="btnZeroize">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>80</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>НУЛИРАНЕ</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="btnStartStop">
         <property name="minimumSize">
          <size>
-          <width>200</width>
-          <height>100</height>
+          <width>120</width>
+          <height>80</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>200</width>
-          <height>100</height>
+          <width>120</width>
+          <height>80</height>
          </size>
         </property>
         <property name="font">

@@ -25,11 +25,17 @@
 #include "dictionary.h"
 #include "iniparser.h"
 
+#include <windows.h>
+
 #define LCD_PRESCALER 4
 
 namespace Ui {
 class MainWindow;
 }
+
+typedef short (_stdcall *inpfuncPtr)(short portaddr);
+typedef void (_stdcall *oupfuncPtr)(short portaddr, short datum);
+
 
 class MainWindow : public QMainWindow
 {
@@ -52,6 +58,8 @@ private slots:
 
     void scaleReadingFinished();  //Слота се вика когато приключи четене от везната. В него се отработва програмната логика
     void closeEvent(QCloseEvent *event);
+    void on_btnZeroize_clicked();
+
 private:
     Ui::MainWindow *ui;
 

@@ -9,6 +9,10 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     pal.setColor(QPalette::Window, Qt::white);
     ui->frame->setPalette(pal);
 
+    pal = ui->lcdNumber->palette();
+    pal.setColor(QPalette::Background, QColor::fromRgb(240,250,240));
+    ui->lcdNumber->setPalette(pal);
+
     lot="";
     rawLabelData="";
     labelData="";
@@ -95,7 +99,6 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
 
     delete dict;
     delete fn;
-
 
     //Обектите за работа със сериини портове са изнесени в други нишки
     scale.setupThread(&scaleThread);
@@ -295,3 +298,55 @@ void MainWindow::closeEvent(QCloseEvent *event)
     event->accept();
 }
 
+void MainWindow::on_btnZeroize_clicked()
+{
+/*
+ * http://boorick.livejournal.com/30856.html
+ * http://logix4u.net/parallel-port/26-inpoutx64dll-for-win-xp-64-bit
+ * http://logix4u.net/InpOutBinaries.zip
+ * http://electrosofts.com/parallel/parallelwin.html
+ *
+ */
+
+    HINSTANCE hLib;
+    inpfuncPtr inp32;
+    oupfuncPtr oup32;
+
+    /* Загружаем необходимую dll-ку */
+    hLib = LoadLibrary( (LPCWSTR)QString("inpout32.dll").utf16() );
+
+    if (hLib == NULL)
+    {
+        qDebug() << "LoadLibrary Failed.";
+        return;
+    }
+
+    /* получаем адрес функций */
+    inp32 = (inpfuncPtr) GetProcAddress(hLib, "Inp32");
+
+    if (inp32 == NULL)
+    {
+       qDebug() << "GetProcAddress for Inp32 Failed.";
+         return;
+    }
+
+    oup32 = (oupfuncPtr) GetProcAddress(hLib, "Out32");
+
+    if (oup32 == NULL)
+    {
+        qDebug() << "GetProcAddress for Oup32 Failed.";
+        return;
+    }
+
+
+    // дальше просто пример использования функций
+    // их у нас две:
+    // void oup32(short address, short data)
+    // short Inp32(short address)
+
+    (oup32)(0x378,0xFF);
+    qDebug() << "0xFF was writed to LPT port";
+
+    // при выходе не забыть выгрузить библиотеку
+    FreeLibrary(hLib);
+}
